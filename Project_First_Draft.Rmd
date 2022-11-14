@@ -81,7 +81,7 @@ plott=ggplot(data.sf,aes(color=logged_Pedestrian,size=logged_Pedestrian,stroke=1
   transition_states(starttime,transition_length=1,state_length = 5)+
   labs(x='Logitude',y='Latitude',title=paste('Time :', '{closest_state}'))
 #Run the anime!
-# animate(plott)
+animate(plott)
 ```
 
 ## 3.3. Data Processing
