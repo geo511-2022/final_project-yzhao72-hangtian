@@ -92,32 +92,38 @@ To determine the number of adjacent pedestrian generators, this study determines
 
 ```{r}
 #Read data table
-table=read_csv('data/RunData.csv')%>%as.data.frame()
+table=read_csv('data/RunDataTest.csv')%>%as.data.frame()
 #Check data availability
 check=table%>%
   miss_var_summary()
 #Check if there are columns with NAs
 unique(check$n_miss)
-colnames(table)[1]='intersection_id'
+
 #Keep the original data
 model_table=table
+colnames(model_table)
 #column names changing for model fitting
-model_table=model_table[,-c(1,2,6:30)]
-colnames(model_table)[6]='Assault'
-colnames(model_table)[7]='Breaking_Entering'
-colnames(model_table)[8]='Homicide'
-colnames(model_table)[9]='Other_Sexual_Offense'
-colnames(model_table)[10]='Robbery'
-colnames(model_table)[11]='Sexual_Assault'
-colnames(model_table)[12]='Sexual_Offense'
-colnames(model_table)[14]='Theft_of_Vehicle'
-colnames(model_table)[15]='Accident_Property_damage_only'
-colnames(model_table)[16]='Accident_skyway'
-colnames(model_table)[17]='Accident_injury'
-model_table_notime=model_table[,-4]
+colnames(model_table)[15]='Housing_violations'
+colnames(model_table)[16]='Police_Issue'
+colnames(model_table)[17]='Pot_Hole'
+colnames(model_table)[18]='Road_walking_environment'
+colnames(model_table)[19]='Traffic_problems'
+colnames(model_table)[20]='Garbage_problem'
+colnames(model_table)[21]='Junk_service_problem'
+colnames(model_table)[22]='Neighbourhood_environmental_issues'
+colnames(model_table)[28]='Accident_Property_damage_only'
+colnames(model_table)[29]='Accident_skyway'
+colnames(model_table)[30]='Accident_injury'
+colnames(model_table)[31]='Assault_percentage'
+colnames(model_table)[32]='Homicide_percentage'
+colnames(model_table)[33]='Robbery_percentage'
+colnames(model_table)[34]='SexCrime_percentage'
+colnames(model_table)[35]='NonviolentCrime_percentage'
+colnames(model_table)[36]='Theft_of_Vehicles'
+colnames(model_table)
 #Model fitting
 set.seed(1)
-train_rows=sample(nrow(model_table_notime),dim(model_table_notime)[1]*0.8)
+train_rows=sample(nrow(model_table),dim(model_table)[1]*0.8)
 train_set=model_table[train_rows,]
 test_set=model_table[-train_rows,]
 test_x=test_set[,-1]
@@ -134,4 +140,10 @@ PedAve.rf <- randomForest(PedAve ~ .,
 #Model evaluation
 print(PedAve.rf)
 plot(PedAve.rf)
+
+
+#30 most important attributes
+varImpPlot(PedAve.rf, n.var = min(30, nrow(PedAve.rf$importance)),
+           main = 'Top 30 - variable importance')
+
 ```

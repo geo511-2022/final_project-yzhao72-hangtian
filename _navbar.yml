@@ -1,7 +1,7 @@
-title: "Spatial Data Science Final Project"
+title: "GEO511 Spatial Data Science Final Project"
 type: inverse
 left:
   - text: "Proposal"
-    href: Proposal_Yixuan&Hang4.Rmd
-  - text: "Project"
-    href: Project_First_Draft.Rmd
+    href: intro.html
+  - text: "Porject Paper"
+    href: index.html

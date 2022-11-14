@@ -138,7 +138,7 @@ test_y_pred=predict(PedAve.rf,test_set)
 plot(test_set$PedAve, test_y_pred, main = 'test sample',
      xlab = 'Observed', ylab = 'Predict')
 abline(1, 1)
-
+1292/2
 
 
 
