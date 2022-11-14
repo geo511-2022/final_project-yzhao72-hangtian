@@ -2,7 +2,8 @@
 title: "Applying AI to identify spatial clustering of pedestrian activity and street environment features"
 author: Yixuan Zhao & Hang Tian
 output: 
-  github_document
+  html_document: 
+    css: css/styles.css
 ---
 
 # Introduction to problem/question
