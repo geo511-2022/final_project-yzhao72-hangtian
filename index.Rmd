@@ -102,6 +102,238 @@ To determine the number of adjacent pedestrian generators, this study determines
   <figcaption>Figure 2</figcaption>
 </figure>
 
+<table>
+    <tr>
+        <td>Table 1</td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Variable Name</td>
+        <td>Definition</td>
+        <td>Type</td>
+        <td>Data</td>
+    </tr>
+    <tr>
+        <td>PedAve</td>
+        <td>Pedestrians per 15 minutes at each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>CarAve</td>
+        <td>Number of vehicles per 15 minutes at each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>Latitude</td>
+        <td>X</td>
+        <td>num</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Longitude</td>
+        <td>X</td>
+        <td>num</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>total_pop</td>
+        <td>Population within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>ACS 2015 (5-year estimates),</td>
+    </tr>
+    <tr>
+        <td>black</td>
+        <td>Percentage of African Americans within 0.25mi of each intersection</td>
+        <td>%</td>
+        <td>ACS 2015 (5-year estimates),</td>
+    </tr>
+    <tr>
+        <td>OccoRat</td>
+        <td>The proportion of houses occupied within 0.25mi of each intersection</td>
+        <td>%</td>
+        <td>ACS 2015 (5-year estimates),</td>
+    </tr>
+    <tr>
+        <td>Tree</td>
+        <td>Number of trees on the inner road within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>Traffic</td>
+        <td>The number of traffic accidents within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>Resi</td>
+        <td>Number of residential land within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>Vaca</td>
+        <td>The number of vacant land within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>Comm</td>
+        <td>The number of commercial land within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>ComSev</td>
+        <td>The number of community service land within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>BusStop</td>
+        <td>Number of bus stops within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>Housing Violations</td>
+        <td>Number of 311 Housing Violations within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>Police Issue</td>
+        <td>Number of 311 Police Issues within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>Pot Hole</td>
+        <td>Number of 311 Pot Holes within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>road walking environment</td>
+        <td>The number of 311 road walking environments within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>Traffic problems</td>
+        <td>The number of 311 Traffic problems within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>garbage problem</td>
+        <td>The number of 311 garbage problems within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>Junk service problem</td>
+        <td>The number of 311 Junk service problems within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>Neighborhood Environmental Issues</td>
+        <td>Number of 311 Neighborhood Environmental Issues within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>Assault</td>
+        <td>Number of Assaults within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>NovioCrime</td>
+        <td>Number of NovioCrimes within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>Homicide</td>
+        <td>Number of Homicides within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>Robbery</td>
+        <td>The number of Robbery within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>SexualC</td>
+        <td>Number of Sexual Crimes within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>ACCIDENT PROPERTY DAMAGE ONLY</td>
+        <td>The number of ordinary traffic accidents within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>ACCIDENT SKYWAY/33/198</td>
+        <td>The number of traffic accidents on viaducts within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>ACCIDENT/INJURY</td>
+        <td>The number of traffic accidents causing injury to people within 0.25mi of each intersection</td>
+        <td>num</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>Assault%</td>
+        <td>Assault crime rate (Assault crime/ total_pop*100) within 0.25mi of each intersection</td>
+        <td>%</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>Homicide%</td>
+        <td>Homicide crime rate (Homicide / total_pop*100)  within 0.25mi of each intersection</td>
+        <td>%</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>Robbery%</td>
+        <td>Robbery crime rate (Robbery / total_pop*100)  within 0.25mi of each intersection</td>
+        <td>%</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>SexCrime%</td>
+        <td>SexCrime crime rate (SexCrime / total_pop*100)  within 0.25mi of each intersection</td>
+        <td>%</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>NonviolentCrime%</td>
+        <td>NonviolentCrime crime rate (NonviolentCrime / total_pop*100)  within 0.25mi of each intersection</td>
+        <td>%</td>
+        <td>2009-2020</td>
+    </tr>
+    <tr>
+        <td>Theft of Vehicle%</td>
+        <td>Theft of Vehicle crime rate (Theft of Vehicle / total_pop*100)  within 0.25mi of each intersection</td>
+        <td>%</td>
+        <td>2009-2020</td>
+    </tr>
+</table>
+
+
 # 4. Random Forest Regression Model
 
 ```{r}
