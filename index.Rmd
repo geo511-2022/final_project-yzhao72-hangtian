@@ -52,8 +52,8 @@ Eight high-traffic streets in Buffalo were selected for the fieldwork for this s
   <img src="img/Figure 1.png"
       width="555"
       height="786">
-  <figcaption>Figure 1</figcaption>
 </figure>
+#### Figure 1
 <br/> <br/>
 In Figure 1, the study area is depicted. These eight streets were selected as the study's locations because they act as the city of Buffalo's main thoroughfares. The Lower West Side, Downtown, West Side, and North Buffalo are just a few of the most significant areas that these boulevards—which are predominantly business boulevards—pass through. According to the 2007 Great Places in America Program of the American Planning Association, Elmwood Village on the West Side was ranked as the third-best neighborhood. There are many different restaurants, art galleries, museums, shops, cafés, and other establishments. These "catalysts" encourage foot circulation to and from local businesses, which dramatically accelerates neighborhood development. One of the few vibrant sectors that fuels Buffalo's economy is the area surrounding the avenue. The public has a variety of parks, schools, and public areas where they may congregate, walk, and play. As a component of the Olmsted Park and Parkway network, these avenues cut across Delaware Park's western section. The park system offers a variety of spots for people to unwind and take in the beauty, drawing both locals and visitors.
 
@@ -95,244 +95,18 @@ animate(plott)
 
 To determine the number of adjacent pedestrian generators, this study determines the radius of each intersection. 0.25 miles is frequently used as the acceptable walking distance in studies conducted in the United States. Walking distance and time are variable depending on the objective and demographic. In order to calculate the pedestrian generator, this study settled on a fair walking distance of 0.25 miles from each intersection. In this study, pedestrian generators were counted inside a network radius buffer of 0.25 miles that was created using network analyst at each intersection along the eight chosen roadways (shown in Figure 2). Population, crime, and traffic accidents are often used as objective measurements to evaluate the walkability of neighborhoods as one of the three-dimensional factors (density, variety, design). Social Explorer, ACS 2015 (5-year estimates), at the census block group level, provided information on the population composition in the area surrounding each junction. Data on crime, 311 sever and traffic accident are from the Buffalo Open Data period of 2009 to 2020. See Table 1 for detailed data information.
 
+#### Table 1
+```{r}
+data_des_table=read_csv('data/DATASET.csv')
+knitr::kable(data_des_table)
+```
+
 <figure>
   <img src="img/Figure 2.png"
       width="456"
       height="646">
-  <figcaption>Figure 2</figcaption>
 </figure>
-
-<table>
-    <tr>
-        <td>Table 1</td>
-        <td></td>
-        <td></td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>Variable Name</td>
-        <td>Definition</td>
-        <td>Type</td>
-        <td>Data</td>
-    </tr>
-    <tr>
-        <td>PedAve</td>
-        <td>Pedestrians per 15 minutes at each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>CarAve</td>
-        <td>Number of vehicles per 15 minutes at each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>Latitude</td>
-        <td>X</td>
-        <td>num</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>Longitude</td>
-        <td>X</td>
-        <td>num</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>total_pop</td>
-        <td>Population within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>ACS 2015 (5-year estimates),</td>
-    </tr>
-    <tr>
-        <td>black</td>
-        <td>Percentage of African Americans within 0.25mi of each intersection</td>
-        <td>%</td>
-        <td>ACS 2015 (5-year estimates),</td>
-    </tr>
-    <tr>
-        <td>OccoRat</td>
-        <td>The proportion of houses occupied within 0.25mi of each intersection</td>
-        <td>%</td>
-        <td>ACS 2015 (5-year estimates),</td>
-    </tr>
-    <tr>
-        <td>Tree</td>
-        <td>Number of trees on the inner road within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>Traffic</td>
-        <td>The number of traffic accidents within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>Resi</td>
-        <td>Number of residential land within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>Vaca</td>
-        <td>The number of vacant land within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>Comm</td>
-        <td>The number of commercial land within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>ComSev</td>
-        <td>The number of community service land within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>BusStop</td>
-        <td>Number of bus stops within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>Housing Violations</td>
-        <td>Number of 311 Housing Violations within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>Police Issue</td>
-        <td>Number of 311 Police Issues within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>Pot Hole</td>
-        <td>Number of 311 Pot Holes within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>road walking environment</td>
-        <td>The number of 311 road walking environments within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>Traffic problems</td>
-        <td>The number of 311 Traffic problems within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>garbage problem</td>
-        <td>The number of 311 garbage problems within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>Junk service problem</td>
-        <td>The number of 311 Junk service problems within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>Neighborhood Environmental Issues</td>
-        <td>Number of 311 Neighborhood Environmental Issues within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>Assault</td>
-        <td>Number of Assaults within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>NovioCrime</td>
-        <td>Number of NovioCrimes within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>Homicide</td>
-        <td>Number of Homicides within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>Robbery</td>
-        <td>The number of Robbery within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>SexualC</td>
-        <td>Number of Sexual Crimes within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>ACCIDENT PROPERTY DAMAGE ONLY</td>
-        <td>The number of ordinary traffic accidents within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>ACCIDENT SKYWAY/33/198</td>
-        <td>The number of traffic accidents on viaducts within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>ACCIDENT/INJURY</td>
-        <td>The number of traffic accidents causing injury to people within 0.25mi of each intersection</td>
-        <td>num</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>Assault%</td>
-        <td>Assault crime rate (Assault crime/ total_pop*100) within 0.25mi of each intersection</td>
-        <td>%</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>Homicide%</td>
-        <td>Homicide crime rate (Homicide / total_pop*100)  within 0.25mi of each intersection</td>
-        <td>%</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>Robbery%</td>
-        <td>Robbery crime rate (Robbery / total_pop*100)  within 0.25mi of each intersection</td>
-        <td>%</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>SexCrime%</td>
-        <td>SexCrime crime rate (SexCrime / total_pop*100)  within 0.25mi of each intersection</td>
-        <td>%</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>NonviolentCrime%</td>
-        <td>NonviolentCrime crime rate (NonviolentCrime / total_pop*100)  within 0.25mi of each intersection</td>
-        <td>%</td>
-        <td>2009-2020</td>
-    </tr>
-    <tr>
-        <td>Theft of Vehicle%</td>
-        <td>Theft of Vehicle crime rate (Theft of Vehicle / total_pop*100)  within 0.25mi of each intersection</td>
-        <td>%</td>
-        <td>2009-2020</td>
-    </tr>
-</table>
-
+#### Figure 2
 
 # 4. Random Forest Regression Model
 
@@ -390,19 +164,20 @@ plot(PedAve.rf)
 
 ```{r}
 #30 most important attributes
-#varImpPlot(PedAve.rf, n.var = min(30, nrow(PedAve.rf$importance)),
-           #main = 'Top 30 - variable importance')
+# varImpPlot(PedAve.rf, n.var = min(30, nrow(PedAve.rf$importance)),
+# main = 'Top 30 - variable importance')
 knitr::include_graphics('img/Importance.png')
 ```
 
 This research also uses the SHAP machine learning model to explain the model at the end. The generation and verification of the model is carried out in Python, because Python provides a better API to operate the SHAP explanation model. The generated results are shown in Figure 3.
 
+
 <figure>
   <img src="img/Figure 3.png"
       width="456"
       height="646">
-  <figcaption>Figure 3</figcaption>
 </figure>
+#### Figure 3
 
 # 5. Discussion and Conclusion
 
