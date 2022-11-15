@@ -35,11 +35,11 @@ library(fastDummies)
 
 There is already literature that discusses how to increase the liveliness of the street, dating back to Jacobs' desire for variety at both the district and street level. Jacobs strongly promotes the intelligent use of street life to revitalize older neighborhoods, which has resulted in dense, mixed-use clusters, by examining a number of areas in New York City. Kevin Lynch conducts research via enhancing urban form and from the viewpoint of locals. studying urban perception to increase vigor on the streets Jan Gehl uses the qualities of space to welcome or repel, and White discovers that street design and building layout are essential to fostering a thriving street life. Rowley thinks that beautiful street designs and mixed-use structures promote street vitality and boost regional economy. The relationships between urban planning, pedestrian activity, and consumer behavior have also been researched. In order to increase walkability, American cities have taken a variety of measures, such as building housing in downtown areas, enhancing public transportation, and creating supportive community structures. A theoretical framework has been established by earlier research to explore the possibility of altering built environments to increase street dynamism. The researchers also mention the clustering of pedestrian activity and the connection between pedestrian activity and the built environment, to a certain extent. However, quantitative investigations of the link between community environment and pedestrian activity, and associated modeling tools, were only established in the early 2000s due to the absence of adequate spatial methodologies.
 
-## 2.1.
+## 2.1. Built Environment and Pedestrians
 
 Destination accessibility emphasizes the critical part that amenities play in luring pedestrians. According to Purciel et al. and Ewing et al., the amount of street furniture, the percentage of windows on the street, and the percentage of active street frontage are all aspects of the streetscape that are positively connected with pedestrian traffic. The definition of "pedestrian generator" in our model was developed with the help of destination accessibility and streetscape planning. According to studies on the relationship between the built environment and travel intention, "pedestrian generators" are places at each junction that have a high pedestrian foot traffic, such as eateries, museums, parks, etc.
 
-## 2.2.
+## 2.2. Pedestrian demand modeling and random forest
 
 So far, many models have been used to simulate and study pedestrian flow and crowd dynamics. Sathish & Venkatesh used a random forest approach to study the relationship between pedestrian, driver, and environmental characteristics with the aim of investigating factors that significantly influence the severity of pedestrian injuries caused by pedestrians. Yang et al. used machine learning methods such as support vector machines (SVM), ensemble decision trees (EDT), and k-nearest neighbors (KNN) to study the relationship between pedestrian survival and traffic accident scenarios. Sababa used a random forest model to study the relationship between pedestrian traffic accidents and the community environment. However, these research models are uninterpretable black box models, however, interpretable machine learning models are important, as data scientists need to prevent model bias and help decision makers understand how to use our models correctly. The more severe the scenarios, the more the models need to provide evidence of how they work and avoid mistakes. In addition, since most of the current research focuses on the relationship between traffic accidents and people, no one has used the random forest model to explain the relationship between people's travel intention and community environment. Therefore, an interpretable random forest regression model based on SHAP was applied in this study to study the characteristics of streets that attract people to walk. SHAP is a "model interpretation" package developed in Python that can interpret the output of any machine learning model. Its name comes from SHapley Additive exPlanation. Inspired by cooperative game theory, SHAP builds an additive explanation model, and all features are regarded as "contributors". For each predicted sample, the model produces a predicted value, and the SHAP value is the value assigned to each feature in that sample.
 
@@ -162,4 +162,15 @@ plot(PedAve.rf)
            #main = 'Top 30 - variable importance')
 knitr::include_graphics('img/Importance.png')
 ```
+
+This research also uses the SHAP machine learning model to explain the model at the end. The generation and verification of the model is carried out in Python, because Python provides a better API to operate the SHAP explanation model. The generated results are shown in Figure 3.
+
+<figure>
+  <img src="img/Figure 3.png"
+      width="456"
+      height="646">
+  <figcaption>Figure 3</figcaption>
+</figure>
+
+# 5. Discussion and Conclusion
 
