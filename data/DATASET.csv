@@ -1,0 +1,37 @@
+Variable Name,Temporal Resolution,Spatial Resolution,Time Range,Unit,Definition
+PedAve,Every 15 min with NAs,Points,2009-2020,num,Pedestrians per 15 minutes at each intersection
+CarAve,Every 15 min with NAs,Points,2009-2020,num,Number of vehicles per 15 minutes at each intersection
+Latitude,Every 15 min with NAs,Points,2009-2020,num,Y
+Longitude,Every 15 min with NAs,Points,2009-2020,num,X
+total_pop,Fixed,Within Buffer,"ACS 2015 (5-year estimates),",num,Population within 0.25mi of each intersection
+black,Fixed,Within Buffer,"ACS 2015 (5-year estimates),",%,Percentage of African Americans within 0.25mi of each intersection
+OccoRat,Fixed,Within Buffer,"ACS 2015 (5-year estimates),",%,The proportion of houses occupied within 0.25mi of each intersection
+Tree,Fixed,Within Buffer,2020,num,Number of trees on the inner road within 0.25mi of each intersection
+Traffic,Fixed,Within Buffer,2015,num,The number of traffic accidents within 0.25mi of each intersection
+Resi,Fixed,Within Buffer,2015,num,Number of residential land within 0.25mi of each intersection
+Vaca,Fixed,Within Buffer,2015,num,The number of vacant land within 0.25mi of each intersection
+Comm,Fixed,Within Buffer,2015,num,The number of commercial land within 0.25mi of each intersection
+ComSev,Fixed,Within Buffer,2015,num,The number of community service land within 0.25mi of each intersection
+BusStop,Fixed,Within Buffer,2015,num,Number of bus stops within 0.25mi of each intersection
+Housing Violations,Sum through years,Within Buffer,2009-2020,num,Number of 311 Housing Violations within 0.25mi of each intersection
+Police Issue,Sum through years,Within Buffer,2009-2020,num,Number of 311 Police Issues within 0.25mi of each intersection
+Pot Hole,Sum through years,Within Buffer,2009-2020,num,Number of 311 Pot Holes within 0.25mi of each intersection
+road walking environment,Sum through years,Within Buffer,2009-2020,num,The number of 311 road walking environments within 0.25mi of each intersection
+Traffic problems,Sum through years,Within Buffer,2009-2020,num,The number of 311 Traffic problems within 0.25mi of each intersection
+garbage problem,Sum through years,Within Buffer,2009-2020,num,The number of 311 garbage problems within 0.25mi of each intersection
+Junk service problem,Sum through years,Within Buffer,2009-2020,num,The number of 311 Junk service problems within 0.25mi of each intersection
+Neighborhood Environmental Issues,Sum through years,Within Buffer,2009-2020,num,Number of 311 Neighborhood Environmental Issues within 0.25mi of each intersection
+Assault,"Every 15 min time range, cumulated through years",Within Buffer,2009-2020,num,Number of Assaults within 0.25mi of each intersection
+NovioCrime,"Every 15 min time range, cumulated through years",Within Buffer,2009-2020,num,Number of NovioCrimes within 0.25mi of each intersection
+Homicide,"Every 15 min time range, cumulated through years",Within Buffer,2009-2020,num,Number of Homicides within 0.25mi of each intersection
+Robbery,"Every 15 min time range, cumulated through years",Within Buffer,2009-2020,num,The number of Robbery within 0.25mi of each intersection
+SexualC,"Every 15 min time range, cumulated through years",Within Buffer,2009-2020,num,Number of Sexual Crimes within 0.25mi of each intersection
+ACCIDENT PROPERTY DAMAGE ONLY,"Every 15 min time range, cumulated through years",Within Buffer,2009-2020,num,The number of ordinary traffic accidents within 0.25mi of each intersection
+ACCIDENT SKYWAY/33/198,"Every 15 min time range, cumulated through years",Within Buffer,2009-2020,num,The number of traffic accidents on viaducts within 0.25mi of each intersection
+ACCIDENT/INJURY,"Every 15 min time range, cumulated through years",Within Buffer,2009-2020,num,The number of traffic accidents causing injury to people within 0.25mi of each intersection
+Assault%,Fixed,Within Buffer,2009-2020,%,Assault crime rate (Assault crime sum through years / total_pop*100) within 0.25mi of each intersection
+Homicide%,Fixed,Within Buffer,2009-2020,%,Homicide crime rate (Homicide  sum through years / total_pop*100)  within 0.25mi of each intersection
+Robbery%,Fixed,Within Buffer,2009-2020,%,Robbery crime rate (Robbery  sum through years / total_pop*100)  within 0.25mi of each intersection
+SexCrime%,Fixed,Within Buffer,2009-2020,%,SexCrime crime rate (SexCrime  sum through years / total_pop*100)  within 0.25mi of each intersection
+NonviolentCrime%,Fixed,Within Buffer,2009-2020,%,NonviolentCrime crime rate (NonviolentCrime  sum through years / total_pop*100)  within 0.25mi of each intersection
+Theft of Vehicle%,Fixed,Within Buffer,2009-2020,%,Theft of Vehicle crime rate (Theft of Vehicle  sum through years / total_pop*100)  within 0.25mi of each intersection

@@ -1,3 +1,4 @@
+
 #packages may use, or not?
 library(ggplot2)
 library(tidyverse)
@@ -148,3 +149,8 @@ varImpPlot(PedAve.rf, n.var = min(30, nrow(PedAve.rf$importance)),
            main = 'Top 30 - variable importance')
 
 ?randomForest
+
+
+
+
+
