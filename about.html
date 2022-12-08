@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Yixuan Zhao &amp; Hang Tian" />
+
+
+<title>Applying AI to identify spatial clustering of pedestrian activity and street environment features</title>
+
+<script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/simplex.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="css/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">GEO511 Spatial Data Science Final Project</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="about.html">Proposal</a>
+</li>
+<li>
+  <a href="index.html">Porject Paper</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Applying AI to identify spatial clustering
+of pedestrian activity and street environment features</h1>
+<h4 class="author">Yixuan Zhao &amp; Hang Tian</h4>
+
+</div>
+
+
+<div id="introduction-to-problemquestion" class="section level1">
+<h1>Introduction to problem/question</h1>
+<p>Encouraging walking activities is gaining increasing attention as a
+significant strategy for improving public health and urban
+revitalization.</p>
+<p>There are plenty of research focusing on impact of the built
+environment on physical activities; However, few have studied the mixed
+spatial relationship and variation between pedestrian activities and
+urban security environment, community quality of life and built
+environment characteristics. The potential relationship between spatial
+patterns of pedestrian activities, aggregation or dispersion, and
+environmental features is critical, which will not only direct urban
+planners to focus pedestrian safety issues, but also lead architects to
+consider providing a comfortable walking experience around the city.</p>
+<p>Under the topic of pedestrian activities and their dynamics,
+questions addressing issues such as overcrowding and vehicle-pedestrian
+collision mitigation have been thoroughly looked into while pedestrian
+activities itself is rarely a focal point. Nowadays, with the
+advancement of remote scanning technology, it has been used in many
+research topics including intelligent transportation systems and public
+safety evacuation. Therefore, monitoring pedestrian activities is
+becoming easier for understanding complex collective behavior in social
+systems.</p>
+</div>
+<div id="problem-question" class="section level1">
+<h1>Problem / Question</h1>
+<p>Our research hypothesis: (1) Violent crime has a negative impact on
+the number of street pedestrians, while property crime is positively
+correlated with the number of street pedestrians; (2) Different types of
+pedestrian generators will have different impacts on pedestrians. We
+believe that high-density catering and retail pedestrian generators and
+perfect infrastructure will bring more pedestrians to the area; (3)
+Neighborhoods with low social satisfaction and streets near
+disadvantaged communities will not attract too many pedestrians.</p>
+<p>In this research, we would look into how the urban environment
+affects pedestrians’ willingness to walk in Buffalo. Moreover,
+quantifying this relationship and create an estimating model using
+multiple sources of related variables.</p>
+<p>Our assumptions include:</p>
+<ol style="list-style-type: decimal">
+<li><p>Commercial districts tend to attract more pedestrians, and more
+developed those areas are, more willingly people would walk
+around.</p></li>
+<li><p>Violent crimes would reduce the willingness of people walking
+around.</p></li>
+<li><p>People are more willing to walk on neighbourhoods with
+well-developed infrastructure</p></li>
+</ol>
+</div>
+<div id="inspiring-examples" class="section level1">
+<h1>Inspiring Examples</h1>
+<div id="example-1" class="section level2">
+<h2>Example 1</h2>
+<p><a
+href="https://www.tandfonline.com/doi/full/10.1080/13574800701816896"
+class="uri">https://www.tandfonline.com/doi/full/10.1080/13574800701816896</a></p>
+<pre><code>Walkable = close: A walkable environment involves a short distance to a destination, particularly where driving is inconvenient or people are without cars—this is the perspective in transportation planning. This definition has a great deal to do with an individual&#39;s cost-benefits calculation—are the costs of driving or taking transit great enough to provoke an individual to walk?
+
+Walkable = barrier-free: A walkable environment is traversable, without major barriers. Walkability can be refined to mean traversable to children, elderly, handicapped or those wearing high heels.
+
+Walkable = safe: A walkable environment is safe in terms of perceived crime or perceived traffic.
+
+Walkable = full of pedestrian infrastructure and destinations: A walkable environment visibly displays full pedestrian infrastructure such as sidewalks or separated trails, marked pedestrian crossings, street furniture and street trees.
+
+Walkable = upscale, leafy, or cosmopolitan: A walkable place is somewhere that the pedestrian environment is pleasant for upper middle-class professionals, who have other choices for getting around. This is the perspective in much popular and architectural commentary. Such places have several of the following dimensions: an area with coffee shops and interesting stores; a mix of housing types including apartments and condominiums; a grid street pattern and full pedestrian infrastructure including pleasant tree-lined or architecturally interesting streets; well-maintained or scenic green spaces with clear pedestrian paths; a lack of litter, graffiti and obviously down-and-out people. Finally, there should be transit or taxis in case interest lapses. This type of walking is not necessarily brisk.</code></pre>
+</div>
+<div id="example-2" class="section level2">
+<h2>Example 2</h2>
+<p><a
+href="https://www.tandfonline.com/doi/abs/10.1080/10225706.2016.1185639"
+class="uri">https://www.tandfonline.com/doi/abs/10.1080/10225706.2016.1185639</a>
+<img src="https://www.researchgate.net/profile/Mahsa-Mansouri/publication/303531511/figure/fig1/AS:538908972204032@1505497319020/Structure-of-questionnaire-Source-Mansouri-2014.png" alt="A"/></p>
+</div>
+<div id="example-3" class="section level2">
+<h2>Example 3</h2>
+<p><a
+href="https://www.tandfonline.com/doi/full/10.1080/13574809.2019.1592665"
+class="uri">https://www.tandfonline.com/doi/full/10.1080/13574809.2019.1592665</a></p>
+<pre><code>Visual proximity is crucial for the commercialization of buildings adjacent to transit stops. Commercialization around transit stops is closely associated with pedestrian movement (Figure 3a). The paths of arriving and departing passengers converge on and disperse from transit stops. Businesses tend to locate within the viewsheds and hearing ranges of pedestrians and transit passengers. If a person steps out alone from a bus or train, an individual viewshed opens (Figure 3a1). If an individual joins a group in movement, the vantage point can move across urban space. The mode of observing space emerges later as the urban space elongates and encompasses several vantage points, one for each member of the group (Figure 3a2). Transit and commercial activities form a virtuous circle. Transit, depending on the level of service, attracts crowds of passengers that are potential customers. More traffic and passengers attract more surrounding businesses. Established commercial storefronts and entrances to public buildings along pedestrian paths create a pattern of public spaces in visual proximity to transit stops (Figure 3a3).</code></pre>
+<p><img src="https://www.tandfonline.com/na101/home/literatum/publisher/tandf/journals/content/cjud20/2020/cjud20.v025.i01/13574809.2019.1592665/20210721/images/medium/cjud_a_1592665_f0003_oc.jpg" alt="A"/></p>
+</div>
+<div id="example-4" class="section level2">
+<h2>Example 4</h2>
+<p><a
+href="https://observatorio.dadep.gov.co/sites/default/files/documentos/in05_places_for_people.pdf">DOC</a>
+## Example 5 <a
+href="https://link.springer.com/article/10.1057/jphp.2008.47"
+class="uri">https://link.springer.com/article/10.1057/jphp.2008.47</a></p>
+<pre><code>Both GIS and field observation data indicated that neighborhood conditions differed significantly between poor and nonpoor neighborhoods that were equally walkable. Nonpoor neighborhoods had better scores on most indicators related to aesthetics, safety, and pedestrian conveniences. These findings are consistent with previous work on disparities in neighborhood conditions,(5, 37) but to our knowledge this study is the first to demonstrate that these differences remained after controlling for the potentially confounding effect of neighborhood walkability. We also found differences between poor and nonpoor neighborhoods in features less commonly studied, such as pedestrian amenities and conveniences and sidewalk commercial activity. This study shows that low-income urban neighborhoods are less conducive to walking than they would appear to be if we considered only population density, land use mix, and other indicators of urban form. Taking account of neighborhood aesthetics and safety may help explain disparities in health between advantaged and disadvantaged populations.</code></pre>
+</div>
+</div>
+<div id="proposed-data-sources" class="section level1">
+<h1>Proposed data sources</h1>
+<p>We may need data from multiple sources including:</p>
+<p><strong>Dependent variable: pedestrain counts</strong></p>
+<ol style="list-style-type: decimal">
+<li>Buffalo daily pedestrians count data</li>
+</ol>
+<p><strong>We used Script to scrape data from pedestrian counting
+devices on eight streets in Buffalo from 2005 to 2022 from the <a
+href="https://gbnrtc.public.ms2soft.com/tcds/tsearch.asp?loc=Gbnrtc&amp;mod=TCDS">Buffalo
+GBNRTC Pedestrian Counting Projec</a></strong></p>
+<p><strong>Independent variables that may related with pedestrian
+counts</strong></p>
+<ol style="list-style-type: decimal">
+<li>New York state parcels data:</li>
+</ol>
+<p>Link: <a href="http://gis.ny.gov/parcels/"
+class="uri">http://gis.ny.gov/parcels/</a></p>
+<ol start="3" style="list-style-type: decimal">
+<li>Buffalo city daily crime incidents data:</li>
+</ol>
+<p>Link: <a
+href="https://data.buffalony.gov/Public-Safety/Crime-Incidents/d6g9-xbgu"
+class="uri">https://data.buffalony.gov/Public-Safety/Crime-Incidents/d6g9-xbgu</a></p>
+<ol start="4" style="list-style-type: decimal">
+<li>Buffalo 311 service request calls:</li>
+</ol>
+<p>Link: <a
+href="https://data.buffalony.gov/Quality-of-Life/311-Service-Requests/whkc-e5vr"
+class="uri">https://data.buffalony.gov/Quality-of-Life/311-Service-Requests/whkc-e5vr</a></p>
+<ol start="5" style="list-style-type: decimal">
+<li>Received Traffic Incident Calls in Buffalo:</li>
+</ol>
+<p>Link: <a
+href="https://data.buffalony.gov/Public-Safety/Received-Traffic-Incident-Calls/6at3-hpb5"
+class="uri">https://data.buffalony.gov/Public-Safety/Received-Traffic-Incident-Calls/6at3-hpb5</a></p>
+<p><strong>And infraustructure data including:</strong> 6. Buffalo
+transportation stations data:</p>
+<p>Link: <a
+href="https://gis.erie.gov/server/rest/services/DSS/DSS_Funded_Agencies/MapServer"
+class="uri">https://gis.erie.gov/server/rest/services/DSS/DSS_Funded_Agencies/MapServer</a></p>
+<ol start="7" style="list-style-type: decimal">
+<li>Buffalo fire Hydrants locations:</li>
+</ol>
+<p>Link: <a
+href="https://data.buffalony.gov/Public-Safety/Fire-Hydrants/2i8a-ybsk"
+class="uri">https://data.buffalony.gov/Public-Safety/Fire-Hydrants/2i8a-ybsk</a></p>
+<ol start="8" style="list-style-type: decimal">
+<li>Buffalo street trees data:</li>
+</ol>
+<p>Link: <a
+href="https://data.buffalony.gov/Quality-of-Life/Tree-Inventory/n4ni-uuec"
+class="uri">https://data.buffalony.gov/Quality-of-Life/Tree-Inventory/n4ni-uuec</a></p>
+<ol start="9" style="list-style-type: decimal">
+<li>Buffalo traffic control devices data:</li>
+</ol>
+<p>Link: <a
+href="https://data.ny.gov/Transportation/Traffic-Control-Device-Inventory/8fht-3ajj"
+class="uri">https://data.ny.gov/Transportation/Traffic-Control-Device-Inventory/8fht-3ajj</a></p>
+</div>
+<div id="proposed-methods" class="section level1">
+<h1>Proposed methods</h1>
+<p>Building on previous work, this study uses Moran’s I and random
+forest models to examine spatial patterns of pedestrian numbers,
+neighborhood policing, neighborhood quality of life, and built
+environment contributors across eight major streets in Buffalo, New
+York. A combination of pedestrian generators, crime rates, and 311
+community service calls were included as independent variables to study
+the impact of community policing environment, community quality of life,
+and built environment characteristics on them. By using ‘ISLR2’ package,
+we are able to run machine learning algorithms like random forest for
+our project. Besides, for data processing and cleaning, we may need
+‘tidyverse’, ‘dplyr’. Since there are no raster data used in this
+project, we just need ‘sf’ for spatial data and related processing.</p>
+</div>
+<div id="expected-results" class="section level1">
+<h1>Expected results</h1>
+<p>By the end of our project, we would first find which variables would
+be highly correlated with pedestrian counts and conclude how urban
+environment described by those variables collected would have an
+influence on the willingness of people to walk. If the result indicates
+strong relationships between, we could quantify this relationship and
+estimate pedestrian numbers by training a machine learning model.</p>
+<p>This research contributes to the understanding of the spatialpatterns
+of pedestrian activities and geographically variable relationship
+between the built environment and number of pedestrians. We believe this
+study will help guide and focus the minds of policy makers and urban
+planners to introduce street vibrancy by transforming the built
+environment to improve the quality of life in communities.Rather than
+simply identifying features of the built environment that affect
+pedestrian activity, we are more interested in developing a contextual
+analysis model for urban planners to use in their decision-making
+process. We encourage planners and policy makers to consider the optimal
+number of walking destinations to be more pedestrian friendly. Finally,
+we hope that our efforts will help reshape the design thinking behind
+future planning practices and policies.</p>
+</div>
+
+<!-- give the footer some space -->
+<br/>
+<br/>
+
+<footer id="site-footer">
+  <div id="footer1">
+  This website is a project for Adam Wilson's <a href="https://wilsonlab.io/GEO511"><i> Spatial Data Science (GEO511) </i></a>Course at the University at Buffalo
+  </div>
+  <div id="footer2">
+  <a rel="license" property="http://creativecommons.org/ns#license"
+  href="http://creativecommons.org/licenses/by/4.0/" ><img src="img/cc-by.svg" alt="cc-by"/></a> 
+  </div>
+</footer>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+
+</body>
+</html>

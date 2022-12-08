@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Yixuan Zhao &amp; Hang Tian" />
+
+
+<title>Applying AI to identify spatial clustering of pedestrian activity and street environment features</title>
+
+<script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/simplex.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="css/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">GEO511 Spatial Data Science Final Project</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="about.html">Proposal</a>
+</li>
+<li>
+  <a href="index.html">Porject Paper</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Applying AI to identify spatial clustering
+of pedestrian activity and street environment features</h1>
+<h4 class="author">Yixuan Zhao &amp; Hang Tian</h4>
+<h4 class="date">Last compiled date: 08 December, 2022</h4>
+
+</div>
+
+
+<div id="introduction" class="section level1">
+<h1>1. Introduction</h1>
+<p>Active transportation modes, such as walking and cycling, and their
+benefits to the enhancement of public health, quality of life, and urban
+redevelopment, have attracted growing interest in recent years. The
+design of “walkable” city is seen as a key method for mitigating
+illnesses induced by a lack of exercise owing to automotive dependence.
+Furthermore, creating vibrant street life has already been adopted as a
+critical urban redevelopment strategy in the United States and many
+other countries. While there have been many studies in the past that
+have objectively and quantitatively examined the impact of the built
+environment on street dynamism, a large number of studies have generally
+focused on motorized modes of transportation and neglected studies on
+pedestrians. <br/><br/>Understanding the underlying relationship between
+spatial patterns of pedestrian activity, aggregation or dispersion, and
+environmental features is critical. This helps city planners focus on
+pedestrian safety. Today, advances in remote scanning technology are
+used in intelligent transportation systems and public safety evacuation
+research. Therefore, monitoring pedestrian activity and movement makes
+it easier to understand complex collective behaviors in social systems.
+Building on previous work, this study uses K-Mean and random forest
+algorithms in machine learning to study the spatial patterns of
+pedestrian numbers, built environment contributors, and spoilers on
+eight high-traffic streets in Buffalo, New York. Pedestrian generators,
+demographic characteristics, crime rates, and land-use combinations were
+included as independent variables to investigate the impact of
+neighborhood environmental characteristics on pedestrian willingness to
+walk.</p>
+<pre class="r"><code>#Import packages we may use
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+library(ggplot2)
+suppressPackageStartupMessages(library(tidyverse))
+library(animation)
+suppressPackageStartupMessages(library(viridis))
+library(naniar)
+suppressPackageStartupMessages(library(sf))
+suppressPackageStartupMessages(library(lubridate))
+library(gganimate)
+suppressPackageStartupMessages(library(transformr))
+library(RColorBrewer)
+suppressPackageStartupMessages(library(magick))
+suppressPackageStartupMessages(library(randomForest))
+library(fastDummies)</code></pre>
+</div>
+<div id="literature-review" class="section level1">
+<h1>2. Literature Review</h1>
+<p>There is already literature that discusses how to increase the
+liveliness of the street, dating back to Jacobs’ desire for variety at
+both the district and street level. Jacobs strongly promotes the
+intelligent use of street life to revitalize older neighborhoods, which
+has resulted in dense, mixed-use clusters, by examining a number of
+areas in New York City. Kevin Lynch conducts research via enhancing
+urban form and from the viewpoint of locals. studying urban perception
+to increase vigor on the streets Jan Gehl uses the qualities of space to
+welcome or repel, and White discovers that street design and building
+layout are essential to fostering a thriving street life. Rowley thinks
+that beautiful street designs and mixed-use structures promote street
+vitality and boost regional economy. The relationships between urban
+planning, pedestrian activity, and consumer behavior have also been
+researched. In order to increase walkability, American cities have taken
+a variety of measures, such as building housing in downtown areas,
+enhancing public transportation, and creating supportive community
+structures. A theoretical framework has been established by earlier
+research to explore the possibility of altering built environments to
+increase street dynamism. The researchers also mention the clustering of
+pedestrian activity and the connection between pedestrian activity and
+the built environment, to a certain extent. However, quantitative
+investigations of the link between community environment and pedestrian
+activity, and associated modeling tools, were only established in the
+early 2000s due to the absence of adequate spatial methodologies.</p>
+<div id="built-environment-and-pedestrians" class="section level2">
+<h2>2.1. Built Environment and Pedestrians</h2>
+<p>Destination accessibility emphasizes the critical part that amenities
+play in luring pedestrians. According to Purciel et al. and Ewing et
+al., the amount of street furniture, the percentage of windows on the
+street, and the percentage of active street frontage are all aspects of
+the streetscape that are positively connected with pedestrian traffic.
+The definition of “pedestrian generator” in our model was developed with
+the help of destination accessibility and streetscape planning.
+According to studies on the relationship between the built environment
+and travel intention, “pedestrian generators” are places at each
+junction that have a high pedestrian foot traffic, such as eateries,
+museums, parks, etc.</p>
+</div>
+<div id="pedestrian-demand-modeling-and-random-forest"
+class="section level2">
+<h2>2.2. Pedestrian demand modeling and random forest</h2>
+<p>So far, many models have been used to simulate and study pedestrian
+flow and crowd dynamics. Sathish &amp; Venkatesh used a random forest
+approach to study the relationship between pedestrian, driver, and
+environmental characteristics with the aim of investigating factors that
+significantly influence the severity of pedestrian injuries caused by
+pedestrians. Yang et al. used machine learning methods such as support
+vector machines (SVM), ensemble decision trees (EDT), and k-nearest
+neighbors (KNN) to study the relationship between pedestrian survival
+and traffic accident scenarios. Sababa used a random forest model to
+study the relationship between pedestrian traffic accidents and the
+community environment. However, these research models are
+uninterpretable black box models, however, interpretable machine
+learning models are important, as data scientists need to prevent model
+bias and help decision makers understand how to use our models
+correctly. The more severe the scenarios, the more the models need to
+provide evidence of how they work and avoid mistakes. In addition, since
+most of the current research focuses on the relationship between traffic
+accidents and people, no one has used the random forest model to explain
+the relationship between people’s travel intention and community
+environment. Therefore, an interpretable random forest regression model
+based on SHAP was applied in this study to study the characteristics of
+streets that attract people to walk. SHAP is a “model interpretation”
+package developed in Python that can interpret the output of any machine
+learning model. Its name comes from SHapley Additive exPlanation.
+Inspired by cooperative game theory, SHAP builds an additive explanation
+model, and all features are regarded as “contributors”. For each
+predicted sample, the model produces a predicted value, and the SHAP
+value is the value assigned to each feature in that sample.</p>
+</div>
+</div>
+<div id="case-studies-and-data-collection" class="section level1">
+<h1>3. Case studies and Data Collection</h1>
+<div id="study-area" class="section level2">
+<h2>3.1. Study area</h2>
+Eight high-traffic streets in Buffalo were selected for the fieldwork
+for this study.<br/> <br/>
+<figure>
+<img src="img/Figure%201.png"
+      width="555"
+      height="786">
+</figure>
+<div id="figure-1" class="section level4">
+<h4>Figure 1</h4>
+<p><br/> <br/> In Figure 1, the study area is depicted. These eight
+streets were selected as the study’s locations because they act as the
+city of Buffalo’s main thoroughfares. The Lower West Side, Downtown,
+West Side, and North Buffalo are just a few of the most significant
+areas that these boulevards—which are predominantly business
+boulevards—pass through. According to the 2007 Great Places in America
+Program of the American Planning Association, Elmwood Village on the
+West Side was ranked as the third-best neighborhood. There are many
+different restaurants, art galleries, museums, shops, cafés, and other
+establishments. These “catalysts” encourage foot circulation to and from
+local businesses, which dramatically accelerates neighborhood
+development. One of the few vibrant sectors that fuels Buffalo’s economy
+is the area surrounding the avenue. The public has a variety of parks,
+schools, and public areas where they may congregate, walk, and play. As
+a component of the Olmsted Park and Parkway network, these avenues cut
+across Delaware Park’s western section. The park system offers a variety
+of spots for people to unwind and take in the beauty, drawing both
+locals and visitors.</p>
+</div>
+</div>
+<div id="data-collection" class="section level2">
+<h2>3.2. Data Collection</h2>
+<p>The Greater Buffalo Niagara Regional Transit Commission’s (GBNRTC)
+Transportation Data Management System was used to gather information
+about traffic flow, pedestrian movement, geographical data at street
+crossings, and count dates and times for every intersection along the
+avenue. The study also gathered geographic data on “pedestrian
+generators,” such as restaurants and other eating establishments,
+supermarkets and markets, art galleries, event venues, office and retail
+complexes, trees, etc.; population makeup; crime statistics by type;
+traffic accidents; and land use portfolio with reference to Buffalo tax
+parcels. Shapefiles include geocoded tabular information on the
+locations of pedestrian generators. Every 15 minutes, eight hours every
+day, pedestrian counts are taken at each intersection of a road. 7am to
+10am, 12pm to 2pm, and 3pm to 6pm are the designated times of the day.
+Few datasets contain information from January, the coldest month in
+Buffalo, even though data were gathered from May to August from 2009 to
+2020. The study used pedestrian counts to gauge the vibrancy of the
+streets.</p>
+<pre class="r"><code>#This R chunck plots pedestrian distribution at observed time slots
+data=read_csv(&#39;data/CCCCCCDep.csv&#39;)
+#Only use useful part
+data=data[,-c(4,7)]
+#Create an sf class for plot
+data.sf=st_as_sf(data,coords=c(&#39;Longitude&#39;,&#39;Latitude&#39;))
+data.sf=st_set_crs(data.sf,&#39;WGS84&#39;)
+data.sf=st_transform(data.sf,32618)
+data.sf=data.sf[!duplicated(data.sf),]
+#See how pedestrian number distributed
+ggplot(data.sf)+
+  geom_boxplot(aes(,PedAve))+theme_bw()</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
+<pre class="r"><code>#Logged Pedestrain counts for a better color difference
+data.sf$logged_Pedestrian=log2(data.sf$PedAve)
+data.sf=data.sf%&gt;%
+  mutate_if(is.numeric, function(x) ifelse(x&lt;0,0,x))
+c(min(unique(data.sf$logged_Pedestrian)),max(unique(data.sf$logged_Pedestrian)))</code></pre>
+<pre><code>## [1] 0.000000 8.409391</code></pre>
+<pre class="r"><code>data.sf$starttime=as.character(data.sf$starttime)
+colnames(data.sf)[1]=&#39;intersection_id&#39;
+#Animated plot
+plott=ggplot(data.sf,aes(color=logged_Pedestrian,size=logged_Pedestrian,stroke=1.2))+
+  geom_sf()+
+  scale_color_distiller(palette = &quot;Spectral&quot;)+theme_bw()+
+  transition_states(starttime,transition_length=1,state_length = 5)+
+  labs(x=&#39;Logitude&#39;,y=&#39;Latitude&#39;,title=paste(&#39;Time :&#39;, &#39;{closest_state}&#39;))
+#Run the anime!
+animate(plott)</code></pre>
+<p><img
+src="index_files/figure-html/unnamed-chunk-2-1.gif" /><!-- --></p>
+</div>
+<div id="data-processing" class="section level2">
+<h2>3.3. Data Processing</h2>
+<p>To determine the number of adjacent pedestrian generators, this study
+determines the radius of each intersection. 0.25 miles is frequently
+used as the acceptable walking distance in studies conducted in the
+United States. Walking distance and time are variable depending on the
+objective and demographic. In order to calculate the pedestrian
+generator, this study settled on a fair walking distance of 0.25 miles
+from each intersection. In this study, pedestrian generators were
+counted inside a network radius buffer of 0.25 miles that was created
+using network analyst at each intersection along the eight chosen
+roadways (shown in Figure 2). Population, crime, and traffic accidents
+are often used as objective measurements to evaluate the walkability of
+neighborhoods as one of the three-dimensional factors (density, variety,
+design). Social Explorer, ACS 2015 (5-year estimates), at the census
+block group level, provided information on the population composition in
+the area surrounding each junction. Data on crime, 311 sever and traffic
+accident are from the Buffalo Open Data period of 2009 to 2020. See
+Table 1 for detailed data information.</p>
+<div id="table-1" class="section level4">
+<h4>Table 1</h4>
+<pre class="r"><code>data_des_table=read_csv(&#39;data/DATASET.csv&#39;)
+knitr::kable(data_des_table)</code></pre>
+<table>
+<colgroup>
+<col width="13%" />
+<col width="19%" />
+<col width="7%" />
+<col width="11%" />
+<col width="1%" />
+<col width="46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Variable Name</th>
+<th align="left">Temporal Resolution</th>
+<th align="left">Spatial Resolution</th>
+<th align="left">Time Range</th>
+<th align="left">Unit</th>
+<th align="left">Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">PedAve</td>
+<td align="left">Every 15 min with NAs</td>
+<td align="left">Points</td>
+<td align="left">2009-2020</td>
+<td align="left">num</td>
+<td align="left">Pedestrians per 15 minutes at each intersection</td>
+</tr>
+<tr class="even">
+<td align="left">CarAve</td>
+<td align="left">Every 15 min with NAs</td>
+<td align="left">Points</td>
+<td align="left">2009-2020</td>
+<td align="left">num</td>
+<td align="left">Number of vehicles per 15 minutes at each
+intersection</td>
+</tr>
+<tr class="odd">
+<td align="left">Latitude</td>
+<td align="left">Every 15 min with NAs</td>
+<td align="left">Points</td>
+<td align="left">2009-2020</td>
+<td align="left">num</td>
+<td align="left">Y</td>
+</tr>
+<tr class="even">
+<td align="left">Longitude</td>
+<td align="left">Every 15 min with NAs</td>
+<td align="left">Points</td>
+<td align="left">2009-2020</td>
+<td align="left">num</td>
+<td align="left">X</td>
+</tr>
+<tr class="odd">
+<td align="left">total_pop</td>
+<td align="left">Fixed</td>
+<td align="left">Within Buffer</td>
+<td align="left">ACS 2015 (5-year estimates),</td>
+<td align="left">num</td>
+<td align="left">Population within 0.25mi of each intersection</td>
+</tr>
+<tr class="even">
+<td align="left">black</td>
+<td align="left">Fixed</td>
+<td align="left">Within Buffer</td>
+<td align="left">ACS 2015 (5-year estimates),</td>
+<td align="left">%</td>
+<td align="left">Percentage of African Americans within 0.25mi of each
+intersection</td>
+</tr>
+<tr class="odd">
+<td align="left">OccoRat</td>
+<td align="left">Fixed</td>
+<td align="left">Within Buffer</td>
+<td align="left">ACS 2015 (5-year estimates),</td>
+<td align="left">%</td>
+<td align="left">The proportion of houses occupied within 0.25mi of each
+intersection</td>
+</tr>
+<tr class="even">
+<td align="left">Tree</td>
+<td align="left">Fixed</td>
+<td align="left">Within Buffer</td>
+<td align="left">2020</td>
+<td align="left">num</td>
+<td align="left">Number of trees on the inner road within 0.25mi of each
+intersection</td>
+</tr>
+<tr class="odd">
+<td align="left">Traffic</td>
+<td align="left">Fixed</td>
+<td align="left">Within Buffer</td>
+<td align="left">2015</td>
+<td align="left">num</td>
+<td align="left">The number of traffic accidents within 0.25mi of each
+intersection</td>
+</tr>
+<tr class="even">
+<td align="left">Resi</td>
+<td align="left">Fixed</td>
+<td align="left">Within Buffer</td>
+<td align="left">2015</td>
+<td align="left">num</td>
+<td align="left">Number of residential land within 0.25mi of each
+intersection</td>
+</tr>
+<tr class="odd">
+<td align="left">Vaca</td>
+<td align="left">Fixed</td>
+<td align="left">Within Buffer</td>
+<td align="left">2015</td>
+<td align="left">num</td>
+<td align="left">The number of vacant land within 0.25mi of each
+intersection</td>
+</tr>
+<tr class="even">
+<td align="left">Comm</td>
+<td align="left">Fixed</td>
+<td align="left">Within Buffer</td>
+<td align="left">2015</td>
+<td align="left">num</td>
+<td align="left">The number of commercial land within 0.25mi of each
+intersection</td>
+</tr>
+<tr class="odd">
+<td align="left">ComSev</td>
+<td align="left">Fixed</td>
+<td align="left">Within Buffer</td>
+<td align="left">2015</td>
+<td align="left">num</td>
+<td align="left">The number of community service land within 0.25mi of
+each intersection</td>
+</tr>
+<tr class="even">
+<td align="left">BusStop</td>
+<td align="left">Fixed</td>
+<td align="left">Within Buffer</td>
+<td align="left">2015</td>
+<td align="left">num</td>
+<td align="left">Number of bus stops within 0.25mi of each
+intersection</td>
+</tr>
+<tr class="odd">
+<td align="left">Housing Violations</td>
+<td align="left">Sum through years</td>
+<td align="left">Within Buffer</td>
+<td align="left">2009-2020</td>
+<td align="left">num</td>
+<td align="left">Number of 311 Housing Violations within 0.25mi of each
+intersection</td>
+</tr>
+<tr class="even">
+<td align="left">Police Issue</td>
+<td align="left">Sum through years</td>
+<td align="left">Within Buffer</td>
+<td align="left">2009-2020</td>
+<td align="left">num</td>
+<td align="left">Number of 311 Police Issues within 0.25mi of each
+intersection</td>
+</tr>
+<tr class="odd">
+<td align="left">Pot Hole</td>
+<td align="left">Sum through years</td>
+<td align="left">Within Buffer</td>
+<td align="left">2009-2020</td>
+<td align="left">num</td>
+<td align="left">Number of 311 Pot Holes within 0.25mi of each
+intersection</td>
+</tr>
+<tr class="even">
+<td align="left">road walking environment</td>
+<td align="left">Sum through years</td>
+<td align="left">Within Buffer</td>
+<td align="left">2009-2020</td>
+<td align="left">num</td>
+<td align="left">The number of 311 road walking environments within
+0.25mi of each intersection</td>
+</tr>
+<tr class="odd">
+<td align="left">Traffic problems</td>
+<td align="left">Sum through years</td>
+<td align="left">Within Buffer</td>
+<td align="left">2009-2020</td>
+<td align="left">num</td>
+<td align="left">The number of 311 Traffic problems within 0.25mi of
+each intersection</td>
+</tr>
+<tr class="even">
+<td align="left">garbage problem</td>
+<td align="left">Sum through years</td>
+<td align="left">Within Buffer</td>
+<td align="left">2009-2020</td>
+<td align="left">num</td>
+<td align="left">The number of 311 garbage problems within 0.25mi of
+each intersection</td>
+</tr>
+<tr class="odd">
+<td align="left">Junk service problem</td>
+<td align="left">Sum through years</td>
+<td align="left">Within Buffer</td>
+<td align="left">2009-2020</td>
+<td align="left">num</td>
+<td align="left">The number of 311 Junk service problems within 0.25mi
+of each intersection</td>
+</tr>
+<tr class="even">
+<td align="left">Neighborhood Environmental Issues</td>
+<td align="left">Sum through years</td>
+<td align="left">Within Buffer</td>
+<td align="left">2009-2020</td>
+<td align="left">num</td>
+<td align="left">Number of 311 Neighborhood Environmental Issues within
+0.25mi of each intersection</td>
+</tr>
+<tr class="odd">
+<td align="left">Assault</td>
+<td align="left">Every 15 min time range, cumulated through years</td>
+<td align="left">Within Buffer</td>
+<td align="left">2009-2020</td>
+<td align="left">num</td>
+<td align="left">Number of Assaults within 0.25mi of each
+intersection</td>
+</tr>
+<tr class="even">
+<td align="left">NovioCrime</td>
+<td align="left">Every 15 min time range, cumulated through years</td>
+<td align="left">Within Buffer</td>
+<td align="left">2009-2020</td>
+<td align="left">num</td>
+<td align="left">Number of NovioCrimes within 0.25mi of each
+intersection</td>
+</tr>
+<tr class="odd">
+<td align="left">Homicide</td>
+<td align="left">Every 15 min time range, cumulated through years</td>
+<td align="left">Within Buffer</td>
+<td align="left">2009-2020</td>
+<td align="left">num</td>
+<td align="left">Number of Homicides within 0.25mi of each
+intersection</td>
+</tr>
+<tr class="even">
+<td align="left">Robbery</td>
+<td align="left">Every 15 min time range, cumulated through years</td>
+<td align="left">Within Buffer</td>
+<td align="left">2009-2020</td>
+<td align="left">num</td>
+<td align="left">The number of Robbery within 0.25mi of each
+intersection</td>
+</tr>
+<tr class="odd">
+<td align="left">SexualC</td>
+<td align="left">Every 15 min time range, cumulated through years</td>
+<td align="left">Within Buffer</td>
+<td align="left">2009-2020</td>
+<td align="left">num</td>
+<td align="left">Number of Sexual Crimes within 0.25mi of each
+intersection</td>
+</tr>
+<tr class="even">
+<td align="left">ACCIDENT PROPERTY DAMAGE ONLY</td>
+<td align="left">Every 15 min time range, cumulated through years</td>
+<td align="left">Within Buffer</td>
+<td align="left">2009-2020</td>
+<td align="left">num</td>
+<td align="left">The number of ordinary traffic accidents within 0.25mi
+of each intersection</td>
+</tr>
+<tr class="odd">
+<td align="left">ACCIDENT SKYWAY/33/198</td>
+<td align="left">Every 15 min time range, cumulated through years</td>
+<td align="left">Within Buffer</td>
+<td align="left">2009-2020</td>
+<td align="left">num</td>
+<td align="left">The number of traffic accidents on viaducts within
+0.25mi of each intersection</td>
+</tr>
+<tr class="even">
+<td align="left">ACCIDENT/INJURY</td>
+<td align="left">Every 15 min time range, cumulated through years</td>
+<td align="left">Within Buffer</td>
+<td align="left">2009-2020</td>
+<td align="left">num</td>
+<td align="left">The number of traffic accidents causing injury to
+people within 0.25mi of each intersection</td>
+</tr>
+<tr class="odd">
+<td align="left">Assault%</td>
+<td align="left">Fixed</td>
+<td align="left">Within Buffer</td>
+<td align="left">2009-2020</td>
+<td align="left">%</td>
+<td align="left">Assault crime rate (Assault crime sum through years /
+total_pop*100) within 0.25mi of each intersection</td>
+</tr>
+<tr class="even">
+<td align="left">Homicide%</td>
+<td align="left">Fixed</td>
+<td align="left">Within Buffer</td>
+<td align="left">2009-2020</td>
+<td align="left">%</td>
+<td align="left">Homicide crime rate (Homicide sum through years /
+total_pop*100) within 0.25mi of each intersection</td>
+</tr>
+<tr class="odd">
+<td align="left">Robbery%</td>
+<td align="left">Fixed</td>
+<td align="left">Within Buffer</td>
+<td align="left">2009-2020</td>
+<td align="left">%</td>
+<td align="left">Robbery crime rate (Robbery sum through years /
+total_pop*100) within 0.25mi of each intersection</td>
+</tr>
+<tr class="even">
+<td align="left">SexCrime%</td>
+<td align="left">Fixed</td>
+<td align="left">Within Buffer</td>
+<td align="left">2009-2020</td>
+<td align="left">%</td>
+<td align="left">SexCrime crime rate (SexCrime sum through years /
+total_pop*100) within 0.25mi of each intersection</td>
+</tr>
+<tr class="odd">
+<td align="left">NonviolentCrime%</td>
+<td align="left">Fixed</td>
+<td align="left">Within Buffer</td>
+<td align="left">2009-2020</td>
+<td align="left">%</td>
+<td align="left">NonviolentCrime crime rate (NonviolentCrime sum through
+years / total_pop*100) within 0.25mi of each intersection</td>
+</tr>
+<tr class="even">
+<td align="left">Theft of Vehicle%</td>
+<td align="left">Fixed</td>
+<td align="left">Within Buffer</td>
+<td align="left">2009-2020</td>
+<td align="left">%</td>
+<td align="left">Theft of Vehicle crime rate (Theft of Vehicle sum
+through years / total_pop*100) within 0.25mi of each intersection</td>
+</tr>
+</tbody>
+</table>
+<figure>
+<img src="img/Figure%202.png"
+      width="456"
+      height="646">
+</figure>
+</div>
+<div id="figure-2" class="section level4">
+<h4>Figure 2</h4>
+</div>
+</div>
+</div>
+<div id="random-forest-regression-model" class="section level1">
+<h1>4. Random Forest Regression Model</h1>
+<pre class="r"><code>#Read data table
+table=read_csv(&#39;data/RunDataTest.csv&#39;)%&gt;%as.data.frame()
+#Check data availability
+check=table%&gt;%
+  miss_var_summary()
+#Check if there are columns with NAs
+unique(check$n_miss)</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>#Keep the original data
+model_table=table
+colnames(model_table)</code></pre>
+<pre><code>##  [1] &quot;PedAve&quot;                            &quot;CarAve&quot;                           
+##  [3] &quot;Latitude&quot;                          &quot;Longitude&quot;                        
+##  [5] &quot;total_pop&quot;                         &quot;black&quot;                            
+##  [7] &quot;OccoRat&quot;                           &quot;Tree&quot;                             
+##  [9] &quot;Traffic&quot;                           &quot;Resi&quot;                             
+## [11] &quot;Vaca&quot;                              &quot;Comm&quot;                             
+## [13] &quot;ComSev&quot;                            &quot;BusStop&quot;                          
+## [15] &quot;Housing Violations (Req_Serv)&quot;     &quot;Police Issue (Req_Serv)&quot;          
+## [17] &quot;Pot Hole (Req_Serv)&quot;               &quot;road walking environment&quot;         
+## [19] &quot;Traffic problems&quot;                  &quot;garbage problem&quot;                  
+## [21] &quot;Junk service problem&quot;              &quot;Neighborhood Environmental Issues&quot;
+## [23] &quot;Assault&quot;                           &quot;NovioCrime&quot;                       
+## [25] &quot;Homicide&quot;                          &quot;Robbery&quot;                          
+## [27] &quot;SexualC&quot;                           &quot;ACCIDENT PROPERTY DAMAGE ONLY&quot;    
+## [29] &quot;ACCIDENT SKYWAY/33/198&quot;            &quot;ACCIDENT/INJURY&quot;                  
+## [31] &quot;Assault%&quot;                          &quot;Homicide%&quot;                        
+## [33] &quot;Robbery%&quot;                          &quot;SexCrime%&quot;                        
+## [35] &quot;NonviolentCrime%&quot;                  &quot;Theft of Vehicle%&quot;</code></pre>
+<pre class="r"><code>#column names changing for model fitting
+colnames(model_table)[15]=&#39;Housing_violations&#39;
+colnames(model_table)[16]=&#39;Police_Issue&#39;
+colnames(model_table)[17]=&#39;Pot_Hole&#39;
+colnames(model_table)[18]=&#39;Road_walking_environment&#39;
+colnames(model_table)[19]=&#39;Traffic_problems&#39;
+colnames(model_table)[20]=&#39;Garbage_problem&#39;
+colnames(model_table)[21]=&#39;Junk_service_problem&#39;
+colnames(model_table)[22]=&#39;Neighbourhood_environmental_issues&#39;
+colnames(model_table)[28]=&#39;Accident_Property_damage_only&#39;
+colnames(model_table)[29]=&#39;Accident_skyway&#39;
+colnames(model_table)[30]=&#39;Accident_injury&#39;
+colnames(model_table)[31]=&#39;Assault_percentage&#39;
+colnames(model_table)[32]=&#39;Homicide_percentage&#39;
+colnames(model_table)[33]=&#39;Robbery_percentage&#39;
+colnames(model_table)[34]=&#39;SexCrime_percentage&#39;
+colnames(model_table)[35]=&#39;NonviolentCrime_percentage&#39;
+colnames(model_table)[36]=&#39;Theft_of_Vehicles&#39;
+colnames(model_table)</code></pre>
+<pre><code>##  [1] &quot;PedAve&quot;                             &quot;CarAve&quot;                            
+##  [3] &quot;Latitude&quot;                           &quot;Longitude&quot;                         
+##  [5] &quot;total_pop&quot;                          &quot;black&quot;                             
+##  [7] &quot;OccoRat&quot;                            &quot;Tree&quot;                              
+##  [9] &quot;Traffic&quot;                            &quot;Resi&quot;                              
+## [11] &quot;Vaca&quot;                               &quot;Comm&quot;                              
+## [13] &quot;ComSev&quot;                             &quot;BusStop&quot;                           
+## [15] &quot;Housing_violations&quot;                 &quot;Police_Issue&quot;                      
+## [17] &quot;Pot_Hole&quot;                           &quot;Road_walking_environment&quot;          
+## [19] &quot;Traffic_problems&quot;                   &quot;Garbage_problem&quot;                   
+## [21] &quot;Junk_service_problem&quot;               &quot;Neighbourhood_environmental_issues&quot;
+## [23] &quot;Assault&quot;                            &quot;NovioCrime&quot;                        
+## [25] &quot;Homicide&quot;                           &quot;Robbery&quot;                           
+## [27] &quot;SexualC&quot;                            &quot;Accident_Property_damage_only&quot;     
+## [29] &quot;Accident_skyway&quot;                    &quot;Accident_injury&quot;                   
+## [31] &quot;Assault_percentage&quot;                 &quot;Homicide_percentage&quot;               
+## [33] &quot;Robbery_percentage&quot;                 &quot;SexCrime_percentage&quot;               
+## [35] &quot;NonviolentCrime_percentage&quot;         &quot;Theft_of_Vehicles&quot;</code></pre>
+<pre class="r"><code>#Model fitting
+set.seed(1)
+train_rows=sample(nrow(model_table),dim(model_table)[1]*0.8)
+train_set=model_table[train_rows,]
+test_set=model_table[-train_rows,]
+test_x=test_set[,-1]
+test_y=test_set[,1]
+
+PedAve.rf &lt;- randomForest(PedAve ~ ., 
+                         data = train_set,
+                         importance = TRUE,
+                         ntree=400,
+                         xtest=test_x,
+                         ytest=test_y,
+                         keep.forest=TRUE)
+
+#Model evaluation
+print(PedAve.rf)</code></pre>
+<pre><code>## 
+## Call:
+##  randomForest(formula = PedAve ~ ., data = train_set, importance = TRUE,      ntree = 400, xtest = test_x, ytest = test_y, keep.forest = TRUE) 
+##                Type of random forest: regression
+##                      Number of trees: 400
+## No. of variables tried at each split: 11
+## 
+##           Mean of squared residuals: 29.0577
+##                     % Var explained: 75.86
+##                        Test set MSE: 22.69
+##                     % Var explained: 74.29</code></pre>
+<pre class="r"><code>plot(PedAve.rf)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>#30 most important attributes
+# varImpPlot(PedAve.rf, n.var = min(30, nrow(PedAve.rf$importance)),
+# main = &#39;Top 30 - variable importance&#39;)
+knitr::include_graphics(&#39;img/Importance.png&#39;)</code></pre>
+<p><img src="img/Importance.png" width="800" /></p>
+<p>This research also uses the SHAP machine learning model to explain
+the model at the end. The generation and verification of the model is
+carried out in Python, because Python provides a better API to operate
+the SHAP explanation model. The generated results are shown in Figure
+3.</p>
+<figure>
+<img src="img/Figure%203.png"
+      width="456"
+      height="646">
+</figure>
+<div id="figure-3" class="section level4">
+<h4>Figure 3</h4>
+</div>
+</div>
+<div id="discussion-and-conclusion" class="section level1">
+<h1>5. Discussion and Conclusion</h1>
+<p>After testing, our model can accurately predict 75%+ of the test
+data. From the data point of view, our research proves that the street
+environment has an impact on the number of pedestrians on the street.
+Among them, business activities, crime rate and traffic quality have a
+greater impact on the number of pedestrians on the street. According to
+variable importance, the top 10 variables that are highly correlated
+with the number of pedestrians on the street are the number of
+commercial areas, the number of motor vehicles on the street, the crime
+rate of assault, the number of traffic accidents, the rate of robbery
+crime, the quality of traffic, the total number of Population,
+nonviolent crime, and vehicle theft. After that, we used SHAP to further
+explain the relationship between the variables in the model and the
+number of pedestrians. The study found that when there are many
+pedestrians near the street, there are usually more commercial
+activities, resident population, traffic problems, number of bus stops
+and Robbery crime rate. This is in line with findings from previous
+studies, which found that commercial activities are more likely to
+attract some people to drive and walk nearby, and that when large
+numbers of people gather in certain locations, they often cause serious
+traffic problems. In addition, some research on crime has also shown
+that robberies are more likely to occur where pedestrians congregate,
+because more pedestrians provide more targets for crime, and dense
+crowds can interfere with law enforcement agencies’ efforts to catch
+criminals . The study contributes to understanding the spatial patterns
+of pedestrian activity and the geographically changing relationship
+between the built environment and pedestrian numbers. It is hoped that
+this research will guide policymakers and urban planners by transforming
+the built environment to introduce street dynamism, thereby improving
+the quality of life in the community.</p>
+</div>
+<div id="contribute" class="section level1">
+<h1>6.Contribute:</h1>
+<p>Yixuan Zhao<em>: Research design, literature review, data collection
+and cleaning, Python data analysis, text editing. Hang Tian</em>: data
+processing, data visualization, website development, R data analysis,
+text editing.</p>
+</div>
+
+<!-- give the footer some space -->
+<br/>
+<br/>
+
+<footer id="site-footer">
+  <div id="footer1">
+  This website is a project for Adam Wilson's <a href="https://wilsonlab.io/GEO511"><i> Spatial Data Science (GEO511) </i></a>Course at the University at Buffalo
+  </div>
+  <div id="footer2">
+  <a rel="license" property="http://creativecommons.org/ns#license"
+  href="http://creativecommons.org/licenses/by/4.0/" ><img src="img/cc-by.svg" alt="cc-by"/></a> 
+  </div>
+</footer>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+
+</body>
+</html>
